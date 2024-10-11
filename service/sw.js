@@ -61,14 +61,11 @@
 //     return c.html(staticHtml, 200);
 // });
 
-
 // self.addEventListener('fetch', handle(service))
 
 // export default service
 
-
 ////////////////////////////////////////////////
-
 
 // sw.js
 
@@ -704,7 +701,7 @@ const staticHtml2 = `<!-- <!DOCTYPE html>
 
 </html>
 
-`
+`;
 
 // Initialize Hono app with basePath '/service'
 const service = new Hono().basePath('/service');
@@ -713,32 +710,35 @@ const service = new Hono().basePath('/service');
 service.get('/home', (c) => c.text('Web Service Worker is Alive..2'));
 
 service.get('/home2', async (c) => {
-    try {
-        const response = await fetch('https://raw.githubusercontent.com/Amudhavamshi/anjutha-mistress/refs/heads/main/index.html', { mode: 'cors' });
-        const htmlContent = await response.text();
-        return c.render(htmlContent);
-    } catch (err) {
-        console.error(err);
-        return c.html('<h1>Error loading page</h1>'); // Fallback error response
-    }
+  try {
+    const response = await fetch(
+      'https://raw.githubusercontent.com/Amudhavamshi/anjutha-mistress/refs/heads/main/index.html',
+      { mode: 'cors' }
+    );
+    const htmlContent = await response.text();
+    return c.render(htmlContent);
+  } catch (err) {
+    console.error(err);
+    return c.html('<h1>Error loading page</h1>'); // Fallback error response
+  }
 });
 
 service.get('/home3', (c) => c.html(staticHtml2, 200));
 
 // Custom fetch event listener with conditional handling
 self.addEventListener('fetch', (event) => {
-    const url = new URL(event.request.url);
+  const url = new URL(event.request.url);
 
-    if (url.pathname.startsWith('/service/')) {
-        console.log('Handling request with Hono:', event.request.url);
-        event.respondWith(handle(service)(event));
-    } else {
-        console.log('Bypassing service worker for:', event.request.url);
-        event.respondWith(
-            fetch(event.request).catch((error) => {
-                console.error('Fetch failed:', error);
-                return new Response('Network error occurred', { status: 408 });
-            })
-        );
-    }
+  if (url.pathname.startsWith('/service/')) {
+    console.log('Handling request with Hono:', event.request.url);
+    event.respondWith(handle(service)(event));
+  } else {
+    console.log('Bypassing service worker for:', event.request.url);
+    event.respondWith(
+      fetch(event.request).catch((error) => {
+        console.error('Fetch failed:', error);
+        return new Response('Network error occurred', { status: 408 });
+      })
+    );
+  }
 });

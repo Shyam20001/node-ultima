@@ -5,11 +5,14 @@
     "description": "This is a complete fullstack Node+Rust+JSX+Webworkers+ServiceWorkers+Cluster+WorkerThreads HONO-SSR starter"
   },
   "scripts": {
+    "test": "vitest",
     "dev": "tsx watch src/index.ts",
+    "create:client": "mkdir client-dev && cd client-dev && npm init vite@latest",
     "build:css": "tailwindcss -i ./src/styles/styles.css -o ./public/styles.css --minify",
     "watch:css": "tailwindcss -i ./src/styles/styles.css -o ./public/styles.css --watch",
     "addons": "cd @bunvader/rustacean && npm i && npm run build",
     "build": "node esbuild.config.cjs && npm run build:css",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,cts,mts,mjs,cjs,json,css,html,md}'",
     "start": "node dist/bundle.main.js --max-old-space-size=512"
   },
   "dependencies": {
@@ -25,7 +28,9 @@
   "devDependencies": {
     "@types/figlet": "^1.7.0",
     "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
+    "prettier": "^3.3.3",
+    "tsx": "^4.7.1",
+    "vitest": "^2.1.2"
   },
   "private": true,
   "packageManager": "npm@10.8.0"

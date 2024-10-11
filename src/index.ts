@@ -1,57 +1,64 @@
-import { Hono } from 'hono'
-import home from './pages/Home'
+import { Hono } from 'hono';
+import home from './pages/Home';
 // Dynamically construct the path to the native module
 import path from 'path'; // Use require instead of import
-const nativeModulePath = path.join(__dirname, "../Reinforcements/rs/@bunvader/rustacean");  // my-module
+const nativeModulePath = path.join(
+  __dirname,
+  '../Reinforcements/rs/@bunvader/rustacean'
+); // my-module
 const { fibonacci, sum } = require(nativeModulePath); // Use require() for native module
-const clientSrc = path.join(__dirname, '../client', 'index.html')
-import { fibonacci2 } from './workers/jsmod'
-const figlet = require("figlet")
-import { serveStatic } from '@hono/node-server/serve-static'
-import { serve } from '@hono/node-server'
-import cluster from 'cluster'
+const clientSrc = path.join(__dirname, '../client', 'index.html');
+import { fibonacci2 } from './workers/jsmod';
+const figlet = require('figlet');
+import { serveStatic } from '@hono/node-server/serve-static';
+import { serve } from '@hono/node-server';
+import cluster from 'cluster';
 import { Worker } from 'worker_threads'; // Import Worker for threading
-import os from 'os'
+import os from 'os';
 import main from './pages/Main';
 
-
-const numCPUs = os.cpus().length
+const numCPUs = os.cpus().length;
 
 if (cluster.isPrimary) {
-  console.log(`Master ${process.pid} is running`)
+  console.log(`Master ${process.pid} is running`);
 
   // Fork workers
   for (let i = 0; i < numCPUs; i++) {
-    const worker = cluster.fork()
+    const worker = cluster.fork();
 
-    console.log(`Worker ${worker.process.pid} started at ${new Date().toLocaleTimeString()}`)
+    console.log(
+      `Worker ${worker.process.pid} started at ${new Date().toLocaleTimeString()}`
+    );
   }
 
   // Listen for worker exit
   cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died at ${new Date().toLocaleTimeString()}. Code: ${code}, Signal: ${signal}`)
-    console.log('Starting a new worker...')
-    const newWorker = cluster.fork()
-    console.log(`Worker ${newWorker.process.pid} started at ${new Date().toLocaleTimeString()}`)
-  })
+    console.log(
+      `Worker ${worker.process.pid} died at ${new Date().toLocaleTimeString()}. Code: ${code}, Signal: ${signal}`
+    );
+    console.log('Starting a new worker...');
+    const newWorker = cluster.fork();
+    console.log(
+      `Worker ${newWorker.process.pid} started at ${new Date().toLocaleTimeString()}`
+    );
+  });
 
   // Display a Figlet message when the master starts
   figlet('Bausch And Lomb', (err: any, data: any) => {
     if (err) {
-      console.error('Something went wrong with Figlet...', err)
-      return
+      console.error('Something went wrong with Figlet...', err);
+      return;
     }
-    console.log(data)  // Show "Server ON" in Figlet style
-  })
-
+    console.log(data); // Show "Server ON" in Figlet style
+  });
 } else {
   // Workers can share any TCP connection
-  const app = new Hono()
+  const app = new Hono();
 
   // Serve static files from the public directory
-  app.use('/public/*', serveStatic({ root: './' }))
+  app.use('/public/*', serveStatic({ root: './' }));
   //app.use('/workers/web-workers/*', serveStatic({ root: './' }))
-  app.use('/client/*', serveStatic({ root: './' }))
+  app.use('/client/*', serveStatic({ root: './' }));
 
   app.use(
     '/service/*',
@@ -61,20 +68,19 @@ if (cluster.isPrimary) {
       //   js: 'application/javascript', // Set correct MIME for JS files
       // },
     })
-  )
+  );
 
   app.get('/healthz', (c) => {
-    return c.text('Hello Hono!')
-  })
+    return c.text('Hello Hono!');
+  });
 
-  app.route('/', home)
-  app.route('/', main)
+  app.route('/', home);
+  app.route('/', main);
 
   // RS and JS + workers fn()s
   // console.log(sum(5, 5))
   // console.log(fibonacci(35))
   // console.log(fibonacci2(32))
-
 
   ///
 
@@ -82,7 +88,11 @@ if (cluster.isPrimary) {
   function calculateFibonacciInWorker(n: number): Promise<number> {
     return new Promise((resolve, reject) => {
       // Construct the path to the worker script
-      const workerPath = path.join(__dirname, '../workers/server-workers', 'jsworker.mjs');
+      const workerPath = path.join(
+        __dirname,
+        '../workers/server-workers',
+        'jsworker.mjs'
+      );
 
       // Create a new worker
       const worker = new Worker(workerPath, {
@@ -113,26 +123,25 @@ if (cluster.isPrimary) {
 
   // rs endpoint
   app.get('/rust-rs', async (c) => {
-    let val = fibonacci(30)
-    return c.json({ msg: `RUST -> ${val}` }, 200)
-  })
+    let val = fibonacci(30);
+    return c.json({ msg: `RUST -> ${val}` }, 200);
+  });
 
   app.get('/node-js', async (c) => {
-    let val = fibonacci2(30)
-    return c.json({ msg: `NODE -> ${val}` }, 200)
-  })
+    let val = fibonacci2(30);
+    return c.json({ msg: `NODE -> ${val}` }, 200);
+  });
 
-
-  // ## 
+  // ##
   app.get('/client', async (c) => {
-    return c.html(clientSrc)
-  })
+    return c.html(clientSrc);
+  });
 
-  const port: any = process.env.PORT || '3000'
-  console.log(`Worker ${process.pid} running on port ${port}`)
+  const port: any = process.env.PORT || '3000';
+  console.log(`Worker ${process.pid} running on port ${port}`);
 
   serve({
     fetch: app.fetch,
     port,
-  })
+  });
 }

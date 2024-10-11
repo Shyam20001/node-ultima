@@ -3,7 +3,7 @@
 // // Listen for messages from the main thread
 // self.onmessage = (event) => {
 //     const { operation, num1, num2 } = event.data;
-  
+
 //     let result;
 //     switch (operation) {
 //       case 'add':
@@ -21,11 +21,10 @@
 //       default:
 //         result = 'Invalid operation';
 //     }
-  
+
 //     // Post the result back to the main thread
 //     self.postMessage(result);
 //   };
-  
 
 // src/myWorker.ts
 self.onmessage = (event) => {

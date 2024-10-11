@@ -1,4 +1,4 @@
-import type { FC } from "hono/jsx";
+import type { FC } from 'hono/jsx';
 
 export const Layout: FC<{
   children: any;
@@ -13,9 +13,9 @@ export const Layout: FC<{
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta
           name="description"
-          content={props.description || "Default description"}
+          content={props.description || 'Default description'}
         />
-        <title>{props.title || "My Website"}</title>
+        <title>{props.title || 'My Website'}</title>
         {/* Link to Tailwind CSS */}
         <link rel="stylesheet" href="/public/styles.css" />
       </head>

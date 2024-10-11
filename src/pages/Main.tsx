@@ -15,11 +15,7 @@ main.use(
         </head>
         <body>
           <header>Menu</header>
-          <button 
-            hx-get="/page/alert" 
-            hx-target="#message" 
-            hx-swap="innerHTML"
-          >
+          <button hx-get="/page/alert" hx-target="#message" hx-swap="innerHTML">
             HI
           </button>
           <div id="message"></div> {/* This will display the response */}
