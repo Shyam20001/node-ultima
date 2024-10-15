@@ -137,7 +137,7 @@ if (cluster.isPrimary) {
     return c.html(clientSrc);
   });
 
-  const port: any = process.env.PORT || '3000';
+  const port: any = process.env.PORT || '3549';
   console.log(`Worker ${process.pid} running on port ${port}`);
 
   serve({

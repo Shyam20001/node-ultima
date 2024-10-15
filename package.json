@@ -8,6 +8,7 @@
     "test": "vitest",
     "dev": "tsx watch src/index.ts",
     "create:client": "mkdir client-dev && cd client-dev && npm init vite@latest",
+    "create:client-pwa": "mkdir client-dev && cd client-dev && npm create @vite-pwa/pwa@latest",
     "build:css": "tailwindcss -i ./src/styles/styles.css -o ./public/styles.css --minify",
     "watch:css": "tailwindcss -i ./src/styles/styles.css -o ./public/styles.css --watch",
     "addons": "cd @bunvader/rustacean && npm i && npm run build",

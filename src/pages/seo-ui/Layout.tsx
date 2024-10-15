@@ -28,10 +28,10 @@ export const Layout: FC<{
             <a href="/" className="mr-4">
               Home
             </a>
-            <a href="/page/about" className="mr-4">
-              About
+            <a href="/client" className="mr-4">
+              Get Started
             </a>
-            <a href="/contact">Contact</a>
+            <a href="/service/home3">Offline-Portfolio</a>
           </nav>
         </header>
 
